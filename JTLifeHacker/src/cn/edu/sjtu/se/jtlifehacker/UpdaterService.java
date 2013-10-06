@@ -3,10 +3,8 @@ package cn.edu.sjtu.se.jtlifehacker;
 import java.util.List;
 
 import android.app.Service;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 
@@ -29,20 +27,11 @@ public class UpdaterService extends Service {
 				long time = Long.parseLong(prefs.getString("sync_frequency", "30"))*1000*60; // TODO remove magic number here
 					
 				List<NewsFetcher> fetchers = ((JTLifeHackerApplication)getApplication()).mFetchers;
-				System.out.println(fetchers);
-				DatabaseHelper dbhelper = new DatabaseHelper(UpdaterService.this,fetchers);
-				SQLiteDatabase db = dbhelper.getWritableDatabase();
-				for(NewsFetcher fetcher : fetchers) {
-					for(NewsFetcher.Entry entry : fetcher.getLatestEntries()) {
-						ContentValues values = new ContentValues();
-						values.put(DatabaseHelper.C_KEY, entry.key);
-						values.put(DatabaseHelper.C_TITLE, entry.title);
-						values.put(DatabaseHelper.C_DATE, entry.date);
-						values.put(DatabaseHelper.C_CONTENT, entry.content);
-						db.insertOrThrow(fetcher.table_name(), null, values);
-					}
+				for (NewsFetcher fetcher : fetchers) {
+					DatabaseHelper dbhelper = new DatabaseHelper();
+					dbhelper.writeEntries(UpdaterService.this, fetcher.table_name(), fetcher.getLatestEntries());
 				}
-				db.close();
+
 				sleep(time);
 			} catch (InterruptedException e) {
 				UpdaterService.this.working = false;
