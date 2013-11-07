@@ -20,6 +20,9 @@ public class NewsTitleFragment extends Fragment {
 	private ListView mTitleList;
 	private List<NewsFetcher.Entry> mEntries;
 
+	/**
+	 * After view is created, inflate the layout
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -29,9 +32,9 @@ public class NewsTitleFragment extends Fragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		Bundle bundle = getArguments();
-
 		int pos = bundle.getInt(NEWS_SOURCE);
-		NewsFetcher fetcher = ((JTLifeHackerApplication)getActivity().getApplication()).mFetchers.get(pos);
+
+		NewsFetcher fetcher = ((JTLifeHackerApplication)getActivity().getApplication()).mAllFetcher.get(pos);
 		
 		mTitleList = (ListView) getView().findViewById(R.id.title_list);
 		DatabaseHelper dbhelper = new DatabaseHelper();
@@ -62,6 +65,7 @@ public class NewsTitleFragment extends Fragment {
 	
 	private void selectNewsTitle(int pos) {
 		Fragment new_fragment = new NewsContentFragment();
+		// Take everything that should be shown to the new Fragment
 		Bundle bundle = new Bundle();
 		bundle.putString(NewsContentFragment.NEWS_CONTENT, mEntries.get(pos).content);
 		bundle.putString(NewsContentFragment.NEWS_TITLE, mEntries.get(pos).title);

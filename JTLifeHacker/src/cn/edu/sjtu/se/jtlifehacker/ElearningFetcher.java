@@ -6,7 +6,7 @@ import java.util.List;
 public class ElearningFetcher implements NewsFetcher {
 
 	@Override
-	public List<Entry> getLatestEntries() {
+	public List<Entry> getLatestEntries(String username, String password) {
 		// TODO replace it with actual code
 		ArrayList<Entry> test_result = new ArrayList<NewsFetcher.Entry>();
 		test_result.add(new Entry("title1","2013/10/05","content1"));

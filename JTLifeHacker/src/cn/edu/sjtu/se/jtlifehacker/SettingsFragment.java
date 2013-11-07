@@ -1,18 +1,26 @@
 package cn.edu.sjtu.se.jtlifehacker;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
+import android.text.InputType;
 import android.text.TextUtils;
 
 public class SettingsFragment extends PreferenceFragment {
+	private Set<String> mPopulatedUserId;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +46,35 @@ public class SettingsFragment extends PreferenceFragment {
 		bindPreferenceSummaryToValue(findPreference("notifications_news_ringtone"));
 		bindPreferenceSummaryToValue(findPreference("sync_frequency"));
 		
-		
+		populatePasswordSetting();
+    }
+    
+    /**
+     * When password setting is clicked, open a new fragment
+     */
+    private void populatePasswordSetting() {
+    	mPopulatedUserId = new HashSet<String>();
+		PreferenceScreen screen = (PreferenceScreen)findPreference("password_setting");
+		JTLifeHackerApplication application = (JTLifeHackerApplication) getActivity().getApplication();
+		for (NewsFetcher fetcher : application.mAllFetcher) {
+			if (fetcher.requiresLogin()) {
+				if (mPopulatedUserId.contains(fetcher.pref_username_id()))
+					continue;
+				mPopulatedUserId.add(fetcher.pref_username_id());
+
+				EditTextPreference user_pref = new EditTextPreference(getActivity());
+				user_pref.setKey(fetcher.pref_username_id());
+				user_pref.setTitle(fetcher.display_name() + " Username"); // TODO use R.string instead
+
+				EncryptedEditTextPreference passwd_pref = new EncryptedEditTextPreference(getActivity());
+				passwd_pref.setKey(fetcher.pref_password_id());
+				passwd_pref.setTitle(fetcher.display_name() + " Password"); // TODO use R.string instead
+				passwd_pref.getEditText().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+				screen.addPreference(user_pref);
+				screen.addPreference(passwd_pref);
+			}
+		}
     }
 
 	/**

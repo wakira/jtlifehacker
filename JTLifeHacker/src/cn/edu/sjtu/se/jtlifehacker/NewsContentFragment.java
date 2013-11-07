@@ -9,6 +9,7 @@ import android.webkit.WebView;
 import android.widget.TextView;
 
 public class NewsContentFragment extends Fragment {
+	// Define keys for bundle
 	public static final String NEWS_CONTENT = JTLifeHackerApplication.PACKAGE_NAME + ".NEWS_CONTENT";
 	public static final String NEWS_TITLE = JTLifeHackerApplication.PACKAGE_NAME + ".NEWS_TITLE";
 	public static final String NEWS_DATE = JTLifeHackerApplication.PACKAGE_NAME + ".NEWS_DATE";
@@ -20,7 +21,7 @@ public class NewsContentFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		Bundle bundle = getArguments();
 		String content = bundle.getString(NEWS_CONTENT);
-		String date = bundle.getString(NEWS_DATE);
+		String date = bundle.getString(NEWS_DATE); // TODO add date show, which is not in layout yet
 		String title = bundle.getString(NEWS_TITLE);
 		
 		mTitle = (TextView) getView().findViewById(R.id.newscontent_title);

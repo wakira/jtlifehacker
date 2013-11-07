@@ -7,6 +7,8 @@ import java.util.List;
  * TITLE: the title
  * DATE: a string of date (optional)
  * CONTENT: content
+ * After implementing a NewsFetcher, register it in JTLifeHackerAPplication.onCreate
+ * or it will not be used
  * 
  */
 
@@ -32,5 +34,5 @@ public interface NewsFetcher {
 		public final String content;
 	}
 	
-	List<Entry> getLatestEntries();
+	List<Entry> getLatestEntries(String username, String password);
 }

@@ -26,10 +26,10 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onResume() {
-		// Update left drawer lists according to selected news fetchers
+		// Update left drawer lists according to selected news fetcher
 		Log.d("DevDEBUG","onResume()");
 		ArrayList<String> drawer_items = new ArrayList<String>();
-		for(NewsFetcher fetcher : ((JTLifeHackerApplication)getApplication()).mFetchers) {
+		for(NewsFetcher fetcher : ((JTLifeHackerApplication)getApplication()).mAllFetcher) {
 			drawer_items.add(fetcher.display_name());
 		}
 		mLeftDrawer.setAdapter(new ArrayAdapter<String>(
@@ -99,16 +99,17 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
 	}
 	
+	// TODO change arg0 arg1 arg2 arg3 to meaningful name
 	private class OnDrawerItemClickListener implements ListView.OnItemClickListener {
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
 			mDrawerLayout.closeDrawer(mLeftDrawer);
-			if (arg2 <  ((JTLifeHackerApplication)getApplication()).mFetchers.size()) {
+			if (arg2 <  ((JTLifeHackerApplication)getApplication()).mAllFetcher.size()) {
 				// user has selected a news type
 				selectNewsSource(arg2);
 			} else {
-				// TODO otherwise...
+				// TODO otherwise...? Might not be possible to reach here
 			}
 		}
 	}
@@ -116,6 +117,7 @@ public class MainActivity extends Activity {
 	private void selectNewsSource(int pos) {
 		// TODO do fragment transaction correspondingly
 		Fragment new_fragment = new NewsTitleFragment();
+		// Take information "selected pos" to new fragment
 		Bundle bundle = new Bundle();
 		bundle.putInt(NewsTitleFragment.NEWS_SOURCE, pos);
 		new_fragment.setArguments(bundle);
